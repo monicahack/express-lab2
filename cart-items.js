@@ -45,14 +45,19 @@ cart.get("/:id", async (req, res) => {
 });
 
 cart.post("/", async (req, res) => {
-    let results = await pool.query('INSERT INTO shopping_cart (product, price, quantity) values ($1, $2, $3) RETURNING *', [req.body.product, req.body.price, req.body.quantity])
+    let results = await pool.query('INSERT INTO shopping_cart (product, price, quantity) values ($1, $2, $3) RETURNING *', [req.body.product, req.body.price, req.body.quantity]);
     res.status(201).json(results.rows);
+});
+
+cart.put("/:id", async (req, res) => {
+    let id = parseFloat(req.params.id);
+    let results = await pool.query('UPDATE shopping_cart SET (product, price, quantity) = ($2, $3, $4) WHERE id =$1 RETURNING *',[id, req.body.product, req.body.price, req.body.quantity]);
+    res.status(200).json(results.rows);
 });
 
 cart.delete("/:id", async (req, res) => {
     let results = await pool.query('DELETE FROM shopping_cart WHERE id=$1',[req.params.id])
     res.status(204).json("Deleting a cart item..");
   });
-
 
 module.exports = cart;
