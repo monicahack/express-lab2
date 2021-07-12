@@ -56,8 +56,16 @@ cart.put("/:id", async (req, res) => {
 });
 
 cart.delete("/:id", async (req, res) => {
-    let results = await pool.query('DELETE FROM shopping_cart WHERE id=$1',[req.params.id])
+    let results = await pool.query('DELETE FROM shopping_cart WHERE id=$1',[req.params.id]);
     res.status(204).json("Deleting a cart item..");
   });
+
+//extended challenge - works when I use the SQL to query in pgAdmin, but 
+//it doesn't work here
+  cart.get("/:total", async (req, res) => {
+    let total = req.query.total;
+    let results = await pool.query('SELECT SUM (price) FROM shopping_cart',[total]);
+    res.status(200).json(results.rows);
+});
 
 module.exports = cart;
